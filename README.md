@@ -19,6 +19,7 @@ Spider在接收Response后进行处理，输出结果Item，由ItemPipeline进�
 
 #### (5).Middlewares
 中间件主要分两个，一个是DownloaderMiddleware，一个是SpiderMiddleware<br>
+
 可理解成Request与Response在整个Scrapy流程中的修改器
 
 ### 2、文件结构
@@ -38,7 +39,7 @@ Spider在接收Response后进行处理，输出结果Item，由ItemPipeline进�
 
 `> scrapy startproject Bidding`
 
-## 二、Spider
+## 二、spider.py
 
 ### 1、新建Spider
 
@@ -58,7 +59,7 @@ Spider抛出的第一个Request，可由scrapy.FormRequest编辑提交内容<br>
 
 `yield scrapy.FormRequest(url='', formdata='', meta={'', ''}, callback=self.parse)`
 
-url为请求地址，该项目url='http://deal.ggzy.gov.cn/ds/deal/dealList_find.jsp'<br>
+url为请求地址，该项目url = 'http://deal.ggzy.gov.cn/ds/deal/dealList_find.jsp'<br>
 
 formdata为提交的表格内容，类型是字典<br>
 
@@ -108,4 +109,54 @@ callback为处理该request返回的response的函数，即经过Downloader返�
 
 抛出item到ItemPipelines中：<br>
 
-`yield item'
+`yield item`
+
+## 三、items.py
+
+创建Item类并定义各字段
+
+    Class BiddingItem(scrapy.Item):
+        pro_id = scarpy.Field()
+        ......
+
+## 四、middlewares.py
+
+### 1、class BiddingSpiderMiddleware:
+
+### 2、class BiddingDownloaderMiddleware:
+
+## 五、pipelines.py
+
+### 1、定义数据库：
+
+    import pymongo
+    from Bidding import settings
+    
+    class BiddingPipeline:
+    
+        client = pymongo.MongoClient(host=settings.MONGODB_HOST, port=settings.MONGODB_PORT)
+        db = client[settings.MONGODB_DBNAME]
+        self.sheet = db[settings.MONGODB_SHEETNAME]
+
+### 2、处理Item：
+
+在函数process_item中定义spider抛出item的处理方法<br>
+
+该项目在此处进行去重
+
+### 3、处理下载文件：
+
+    from scrapy.pipelines.files import FilesPipeline
+    
+    class FileDownloadPipeline(FilesPipeline):
+
+        def get_media_requests(self, item, info):
+            urls = ItemAdapter(item).get(self.files_urls_field, [])
+            names = ItemAdapter(item).get(self.files_names_field, [])
+            for i in range(0, len(urls)):
+                return [Request(url=urls[i], meta={'name': names[i]})]
+
+        def file_path(self, request, response=None, info=None, *, item=None):
+            return '%s' % request.meta['name']
+
+## 六、settings.py
