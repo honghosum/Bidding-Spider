@@ -17,6 +17,8 @@ NEWSPIDER_MODULE = 'Bidding.spiders'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
+LOG_FILE = './log.txt'
+LOG_LEVEL = 'INFO'
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 # CONCURRENT_REQUESTS = 32
@@ -90,7 +92,7 @@ FILES_STORE = './appendix'
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
-# AUTOTHROTTLE_ENABLED = True
+AUTOTHROTTLE_ENABLED = True
 # The initial download delay
 # AUTOTHROTTLE_START_DELAY = 5
 # The maximum download delay being set in case of high latencies

@@ -35,17 +35,17 @@ class BiddingPipeline:
             self.sheet.insert_one(data)
             self.store_count += 1
             return item
-        elif self.store_count != 0 and not self.sheet.find_one({'pro_name': data['pro_name']}) and data['content']:
+        elif self.store_count != 0 and not self.sheet.find_one({'pro_id': data['pro_id']}) and data['content']:
             self.sheet.insert_one(data)
             self.store_count += 1
             return item
-        elif self.store_count != 0 and self.sheet.find_one({'pro_name': data['pro_name']}):
+        elif self.store_count != 0 and self.sheet.find_one({'pro_id': data['pro_id']}):
             self.duplicate_count += 1
 
-        logging.info(self.store_count)
-        logging.info(self.duplicate_count)
+        logging.info('Current Storage Counted ---- ' + str(self.store_count))
+        logging.info('Current Duplicated Counted ----- ' + str(self.duplicate_count))
         # cd C://Program Files//MongoDB//Server//4.4//bin
-        # mongoexport -d bidding -c total_bidding -f date,platform,province,content_url,origin_url,pro_name,pro_type,pro_id,pur_name,pur_add,pur_tel,attn_name,attn_tel,sup_name,sup_add,price,content,file_path --type=csv -o D:/BiddingProject/total_bidding/output.csv
+        # mongoexport -d bidding -c total_bidding -f classify,stage,keyword,date,platform,province,content_url,origin_url,pro_name,pro_id,pur_name,pur_add,pur_tel,attn_name,attn_tel,sup_name,sup_add,price,period,content,file_path --type=csv -o D:/Bidding/output.csv
 
 
 class FileDownloadPipeline(FilesPipeline):
